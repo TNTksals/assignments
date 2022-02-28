@@ -16,7 +16,7 @@ Ref：http://wiki.ros.org/rosbag/Commandline#rosbag_info
 
 ## 关于image_transport
 
-试图通过以下简单的方式来订阅*/galaxy_camera/image_raw/compressed*，你会看到类似的Warning：
+试图通过以下简单的方式来订阅 */galaxy_camera/image_raw/compressed*，你会看到类似的Warning：
 ```
 #include <ros/ros.h>
 #include <image_transport/image_transport.h>
@@ -29,9 +29,9 @@ ros::NodeHandle nh;
 image_transport::ImageTransport it(nh);
 image_transport::Subscriber sub = it.subscribe("/galaxy_camera/image_raw/compressed", 1, imageCallback);
 ```
-<font color=yellow>
+
 [ WARN] [1645977457.181674171]: [image_transport] It looks like you are trying to subscribe directly to a transport-specific image topic '/galaxy_camera/image_raw/compressed', in which case you will likely get a connection error. Try **subscribing to the base topic '/galaxy_camera/image_raw'** instead with parameter ~image_transport set to 'compressed' (**on the command line, _image_transport:=compressed**). See http://ros.org/wiki/image_transport for details.
-</font>
+
 
 * 我加粗的地方表明了解决方法：**rosrun &nbsp;&nbsp;xxxxx&nbsp;&nbsp; _image_transport:=compressed**
 (同样这在论坛上也有个答案：https://answers.ros.org/question/11118/exporting-compressed-video/)
@@ -73,13 +73,12 @@ private:
 
 但是这要求Image和CameraInfo是同步的。你可能看到(或者跑着跑着出现)以下Warning：
 
-<font color=yellow>
 [ WARN ] [1645980834.506724356]: [image_transport] Topics '/galaxy_camera/image_raw/compressed' and '/galaxy_camera/camera_info' do not appear to be synchronized. In the last 10s:
 	Image messages received:      1057
 	CameraInfo messages received: 1041
 	Synchronized pairs:           1
-</font>
 	
+
 **增大queue_size**以解决：
 ```
 cam_sub_ = it_.subscribeCamera("/galaxy_camera/image_raw", 10, &ImageConverter::onFrameCb, this);
